@@ -239,6 +239,9 @@ class Crawler
                 return false;
             }
         }
+        if ($this->checkIfExternal($uri)) {
+            return false;
+        }
         return true;
     }
 

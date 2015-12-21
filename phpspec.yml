@@ -1,0 +1,7 @@
+suites:
+    main:
+        namespace: Nivv\Crawly
+        psr4_prefix: Nivv\Crawly
+        src_path: src
+# extensions:
+#     - PhpSpec\Extension\CodeCoverageExtension

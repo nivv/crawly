@@ -1,0 +1,23 @@
+{
+    "name": "nivv/crawly",
+    "autoload": {
+        "psr-4": {
+            "Nivv\\Crawly\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.4"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nivv\\Crawly\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "illuminate/support": "^5.1",
+        "guzzlehttp/guzzle": "^6.1",
+        "symfony/dom-crawler": "2.7.*",
+        "symfony/css-selector": "2.7.*",
+        "fabpot/goutte": "^3.1"
+    }
+}

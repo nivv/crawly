@@ -100,14 +100,14 @@ class Crawler
             $crawler = $client->request('GET', $url);
             $statusCode = $client->getResponse()->getStatus();
 
-            $hash = $this->getPathFromUrl($url);
+            $hash = $url;
             $this->links[$hash]['status_code'] = $statusCode;
 
             if ($statusCode === 200) {
                 $content_type = $client->getResponse()->getHeader('Content-Type');
 
                 if (strpos($content_type, 'text/html') !== false) { //traverse children in case the response in HTML document only
-                    $this->extractTitleInfo($crawler, $hash);
+                    //$this->extractTitleInfo($crawler, $hash);
 
                     $childLinks = array();
                     if (isset($this->links[$hash]['external_link']) === true && $this->links[$hash]['external_link'] === false) {
@@ -115,6 +115,7 @@ class Crawler
                     }
 
                     $this->links[$hash]['visited'] = true;
+                    $this->links[$hash]['depth'] = $depth;
                     $this->traverseChildren($childLinks, $depth - 1);
                 }
             }
@@ -161,8 +162,7 @@ class Crawler
         }
 
         foreach ($childLinks as $url => $info) {
-            $hash = $this->getPathFromUrl($url);
-
+            $hash = $url;
             if (isset($this->links[$hash]) === false) {
                 $this->links[$hash] = $info;
             } else {
@@ -195,7 +195,7 @@ class Crawler
         $childLinks = array();
         $crawler->filter('a')->each(function (DomCrawler $node, $i) use (&$childLinks) {
             $node_text = trim($node->text());
-            $node_url = $node->attr('href');
+            $node_url = $node->link()->getUri();
             $node_url_is_crawlable = $this->checkIfCrawlable($node_url);
             $hash = $this->normalizeLink($node_url);
 
@@ -218,14 +218,17 @@ class Crawler
                     }
 
                     // Is this an external URL?
-                    $childLinks[$hash]['external_link'] = $this->checkIfExternal($childLinks[$hash]['absolute_url']);
+                    $childLinks[$hash]['external_link'] = $this->checkIfExternal($childLinks[$hash]);
 
                     // Additional metadata
                     $childLinks[$hash]['visited'] = false;
                     $childLinks[$hash]['frequency'] = isset($childLinks[$hash]['frequency']) ? $childLinks[$hash]['frequency'] + 1 : 1;
+                    if ($this->checkIfExternal($childLinks[$hash])) {
+                        unset($childLinks[$hash]);
+                    }
+                    
                 } else {
-                    $childLinks[$hash]['dont_visit'] = true;
-                    $childLinks[$hash]['external_link'] = false;
+                    unset($childLinks[$hash]);
                 }
             }
         });
@@ -298,6 +301,9 @@ class Crawler
     {
         $base_url_trimmed = str_replace(array('http://', 'https://'), '', $this->baseUrl);
 
+        if (is_array($url)) {
+            return preg_match("@http(s)?\://$base_url_trimmed@", $url['absolute_url']) == false;
+        }
         return preg_match("@http(s)?\://$base_url_trimmed@", $url) == false;
     }
 

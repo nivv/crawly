@@ -1,6 +1,6 @@
 <?php
 
-namespace Arachnid;
+namespace Nivv\Crawly;
 
 use Goutte\Client as GoutteClient;
 use Guzzle\Http\Exception\CurlException;

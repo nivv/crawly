@@ -2,30 +2,26 @@
 
 namespace spec\Nivv\Crawly;
 
-use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use PhpSpec\ObjectBehavior;
 
 class CrawlerSpec extends ObjectBehavior
 {
     public function it_is_initializable()
     {
-        $this->beConstructedWith('surkultur.se');
+        $this->beConstructedWith('http://surkultur.se', 10);
         $this->shouldHaveType('Nivv\Crawly\Crawler');
     }
 
-    public function it_can_traverse_an_url()
+    public function it_throws_an_exception_if_the_url_is_invalid()
     {
-        $this->beConstructedWith('surkultur.se');
-        $url = null;
-        $this->traverse($url);
-        // $this->traverseSingle($url, 3)->shouldBeCalled();
-        // $this->getGoutteClient()->shouldBeCalled();
+        $url = 'x';
+        $this->shouldThrow('Nivv\Crawly\Exceptions\InvalidUrl')->during('__construct', [$url, 2]);
     }
 
-    public function it_can_return_link_array()
+    public function it_can_return_a_link_array()
     {
-    	$this->beConstructedWith('http://surkultur.se');
-    	$this->traverse(null);
-    	$this->getLinks();
+        $this->beConstructedWith('http://surkultur.se', 10);
+        $this->getLinks()->shouldBeArray();
     }
 }

@@ -94,6 +94,7 @@ class Crawler
 
         // Check if the url is valid
         if (! $this->parser->validUrl($url, $this->baseUrl)) {
+            $this->faultyLinks[$url];
             return;
         }
 

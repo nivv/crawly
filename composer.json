@@ -6,7 +6,8 @@
         }
     },
     "require-dev": {
-        "phpspec/phpspec": "^2.4"
+        "phpspec/phpspec": "^2.4",
+        "phpunit/phpunit": "~4.0"
     },
     "autoload-dev": {
         "psr-4": {

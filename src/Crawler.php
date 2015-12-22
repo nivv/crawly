@@ -76,7 +76,7 @@ class Crawler
      */
     public function getLinks()
     {
-        return $this->links;
+        return ['links' => $this->links, 'faultyLinks' => $this->faultyLinks];
     }
 
 
